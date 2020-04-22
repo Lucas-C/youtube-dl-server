@@ -49,9 +49,8 @@ def q_put():
         url = urlunparse(parsed_url._replace(query=urlencode(qparams)))
     dl_q.put((url, audio_only))
     print("Added url " + url + " to the download queue")
-    if audio_only and DEST_DIR.endswith('/static') and 'v' in qparams:
-        return template('processing', url=quote(url, safe=''), generated_file='{}.mp3'.format(qparams['v']))
-    return { "success" : True, "url" : url }
+    ext = 'mp3' if audio_only else 'mp4'
+    return template('processing', url=quote(url, safe=''), generated_file='{}.{}'.format(qparams['v'], ext))
 
 def dl_worker():
     while not done:

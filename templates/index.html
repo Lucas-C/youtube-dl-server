@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Web frontend for yt-dlp" />
-
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -16,21 +15,30 @@
       body {
         background-color: #002b36;
       }
-
       div.input-group > select.form-select {
         flex: 0.1 1 100px;
       }
+      img {
+        display: block;
+        max-width: 50%;
+        margin: 1rem auto;
+      }
     </style>
-
     <title>youtube-dl</title>
+    <link rel="icon" href="../../favicon.ico">
+    {% if ROBOTS_NOINDEX %}
+    <meta name="robots" content="noindex">
+    {% endif %}
   </head>
 
   <body class="d-flex h-100 text-center text-white">
-    <div class="container d-flex w-100 p-3 flex-column">
-      <header class="mb-auto"></header>
+    <div class="container d-flex w-75 p-3 flex-column">
 
       <main class="px-3">
         <h1 class="display-4">youtube-dl</h1>
+        {% if COVER_IMG %}
+        <img src="{{ COVER_IMG }}">
+        {% else %}
         <p class="lead">
           Enter a video URL to download the video to the server. The URL can be
           from YouTube or
@@ -41,7 +49,8 @@
           >. The server will automatically download the highest quality version
           available.
         </p>
-        <form action="/youtube-dl/q" method="POST">
+        {% endif %}
+        <form action="{{BASE_URL}}/q" method="POST">
           <input type="hidden" name="ui" value="true" />
           <div class="input-group">
             <input
@@ -53,7 +62,7 @@
               aria-describedby="button-submit"
               autofocus
             />
-            <select class="form-select" name="format">
+            <select class="form-select" name="format" style="display: none">
               <optgroup label="Video">
                 <option value="bestvideo">Best Video</option>
                 <option value="mp4">MP4</option>
@@ -80,50 +89,6 @@
           </div>
         </form>
       </main>
-      <footer class="mt-auto text-muted">
-        <div id="liveAlertPlaceholder"></div>
-        <p>
-          Web frontend for
-          <a class="text-light" href="https://github.com/yt-dlp/yt-dlp"
-            >yt-dlp</a
-          >
-          v{{ ytdlp_version }}, by
-          <a class="text-light" href="https://twitter.com/manbearwiz"
-            >@manbearwiz</a
-          >.
-        </p>
-      </footer>
     </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const added = urlParams.get('added');
-
-      function alert(message, type) {
-        var wrapper = document.createElement('div');
-        wrapper.innerHTML =
-          '<div class="alert alert-' +
-          type +
-          ' alert-dismissible" role="alert">' +
-          message +
-          '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-        alertPlaceholder.append(wrapper);
-      }
-
-      if (added) {
-        alert(
-          'Successfully added <a href=' +
-            added +
-            '>one item</a> to the download queue',
-          'success',
-        );
-      }
-    </script>
   </body>
 </html>
